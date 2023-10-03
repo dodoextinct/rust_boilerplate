@@ -1,14 +1,15 @@
 extern crate minigrep;
 
-use std::env;
 use std::process;
 use minigrep::Config;
+use minigrep::args::CliArgs;
+use clap::Parser;
 
 fn main() {
-    let args: Vec<String> = env::args().collect();
-    println!("{:?}", args);
+    let args: CliArgs = CliArgs::parse();
+    println!("{} {}", args.query, args.filename);
 
-    let config = Config::new(&args).unwrap_or_else(|err|{
+    let config = Config::new(args).unwrap_or_else(|err|{
         println!("Problem parsing arg: {}", err);
         process::exit(1);
     });

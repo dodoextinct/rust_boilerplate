@@ -3,6 +3,8 @@ use std::fs::File;
 use std::io::prelude::*;
 use std::env;
 
+pub mod args;
+use args::CliArgs;
 pub struct Config{
     pub query: String,
     pub filename: String,
@@ -10,14 +12,17 @@ pub struct Config{
 }
 
 impl Config{
-    pub fn new(args: &[String]) -> Result<Config, &'static str>{
-    	if args.len() < 3{
-	    return Err("not enought arguments");
-	    }
+    pub fn new(args: CliArgs) -> Result<Config, &'static str>{
 
-	    let query = args[1].clone();
-	    let filename = args[2].clone();
+	    let query = args.query.clone();
+	    let filename = args.filename.clone();
         
+        if query.len() == 0{
+            return Err("query arg can't be emmpty");
+        }
+        if filename.len() == 0{
+            return Err("filename arg can't be emmpty");
+        }
         let case_sensitive = env::var("CASE_INSENSITIVE").is_err();
 	    Ok(Config {query, filename, case_sensitive})
     }
