@@ -1,0 +1,4 @@
+
+
+[env]
+CARGO_MINIGREP_CASE = "1"

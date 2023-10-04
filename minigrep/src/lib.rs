@@ -23,7 +23,13 @@ impl Config{
         if filename.len() == 0{
             return Err("filename arg can't be emmpty");
         }
-        let case_sensitive = env::var("CASE_INSENSITIVE").is_err();
+
+        let env_variable = env!("CARGO_MINIGREP_CASE");
+        let case_sensitive: bool = env_variable == String::from("1");
+        
+        println!("{} {}",case_sensitive, env_variable);
+        env::remove_var("CARGO_MINIGREP_CASE");
+
 	    Ok(Config {query, filename, case_sensitive})
     }
 }

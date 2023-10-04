@@ -6,3 +6,5 @@
 
 src/lib.rs:
 src/args.rs:
+
+# env-dep:CARGO_MINIGREP_CASE=1
