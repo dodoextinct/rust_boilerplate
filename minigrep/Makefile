@@ -2,88 +2,32 @@
 #For Binary: <name>, For Library: lib<name>.a
 NAME		:=	minigrep
 
-#Source Files
-SOURCES		:=	main.c \
-
-#The Directories, Source, Includes, Dependencies
-TESTDIR		:=	test
-BONUSDIR	:=	bonus
-SRCDIR		:=	src
-INCDIR		:=	inc
-DEPDIR		:=	dep
-BLDDIR		:=	obj
-
-#Dependencies
-DEPLIBS		:=	
-DEPDIRS		:=	
 
 #Compiler, Linker, Flags
-CC			:=	cc
-# DEBUG		:=	-g
-# SANITIZE	:=	-fsanitize=address
-CFLAGS		:=	-Wall -Wextra -Werror
+CARGO		:= cargo	
 
-#-------------------------------------------------------------------------------
-#DO NOT EDIT BELOW THIS LINE
-#-------------------------------------------------------------------------------
-TARGET		:=	$(suffix $(NAME))
-CEXT		:=	c
-OEXT		:=	o
-INC			:=	-I$(INCDIR) $(addprefix -I$(DEPDIR)/, $(DEPDIRS))
-LIB			:=	$(addprefix -l, $(DEPLIBS))
-LID			:=	$(addprefix -L$(DEPDIR)/, $(DEPDIRS))
-SRCS		:=	$(addprefix $(SRCDIR)/,$(SOURCES))
-OBJS		:=	$(patsubst $(SRCDIR)/%,$(BLDDIR)/%,$(SRCS:.$(CEXT)=.$(OEXT)))
 
 #Defauilt Make
-all: $(NAME)
-
-bonus: 
-	@make -C $(BONUSDIR)
-	@cp $(BONUSDIR)/$(NAME) ./
-
-#Remake
-re: fclean all
-
-#Make the Directories
-directories:
-	@mkdir -p $(BLDDIR)
-
-#Dependencies
-depend:
-	@for ddir in $(addprefix $(DEPDIR)/, $(DEPDIRS)); do \
-		make -s -C $$ddir; \
-	done
+all:
+	@echo "make clean => clean files"
+	@echo "make test => running tests"
+	@echo "make build => builning the project"
+	@echo "make run query file=> running the binary"
+	@echo "make check => checking compilation"
 
 #Clean only Objects
 clean:
-	@for ddir in $(addprefix $(DEPDIR)/, $(DEPDIRS)); do \
-		make -s -C $$ddir clean; \
-	done
-	@$(RM) -rf $(BLDDIR)
+	$(CARGO) clean
 
-#Full Clean, Objects and Binaries
-fclean: clean
-	@for ddir in $(addprefix $(DEPDIR)/, $(DEPDIRS)); do \
-		make -s -C $$ddir fclean; \
-	done
-	@$(RM) -rf $(NAME)
+build:
+	$(CARGO) build
+	
+run:
+	$(CARGO) run $(query) $(file)
+	
+test:
+	$(CARGO) test
 
-#Link
-$(NAME): $(OBJS)
-	@for ddir in $(addprefix $(DEPDIR)/, $(DEPDIRS)); do \
-		make -s -C $$ddir; \
-	done
-ifeq ($(TARGET), .a)
-	$(AR) -rc $@ $^
-else
-	$(CC) $(SANITIZE) $(DEBUG) $(INC) -o $(NAME) $^ $(LID) $(LIB)
-endif
+check:
+	$(CARGO) check
 
-#Compile
-$(BLDDIR)/%.$(OEXT): $(SRCDIR)/%.$(CEXT) 
-	@mkdir -p $(dir $@)
-	$(CC) $(CFLAGS) $(SANITIZE) $(DEBUG) $(INC) -c -o $@ $<
-
-#Non-File Targets
-.PHONY: all re clean fclean bonus directories depend
