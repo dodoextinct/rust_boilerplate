@@ -2,6 +2,7 @@ use std::error::Error;
 use std::fs::File;
 use std::io::prelude::*;
 use std::env;
+use dotenv::dotenv;
 
 pub mod args;
 use args::CliArgs;
@@ -23,8 +24,9 @@ impl Config{
         if filename.len() == 0{
             return Err("filename arg can't be emmpty");
         }
-
-        let env_variable = env!("CARGO_MINIGREP_CASE");
+        
+        dotenv().ok();
+        let env_variable = env::var("CASE_INSENSITIVE").expect("expected string");
         let case_sensitive: bool = env_variable == String::from("1");
         
         println!("{} {}",case_sensitive, env_variable);
